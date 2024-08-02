@@ -1,0 +1,11 @@
+{
+    "watch": [
+      "src"
+    ],
+    "ext": "js,jsx,ts,tsx,html",
+    "ignore": [
+      "node_modules"
+    ],
+    "exec": "vite"
+  }
+  
