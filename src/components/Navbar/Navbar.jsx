@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import logo from '../../assets/logo_2.png'; // Import logo image
+import React, { useState, useEffect } from "react";
+import logo from "../../assets/logo_2.png"; // Import logo image
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false); // State to toggle mobile menu visibility
@@ -21,11 +21,14 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className=''>
+    <div className="">
       <nav className="fixed top-0 z-20 w-full h-24 bg-white border-b border-gray-200 dark:bg-gray-900 start-0 dark:border-gray-600">
         <div className="flex flex-wrap items-center justify-between p-4 mx-auto max-w-screen-2xl">
           {/* Logo and title */}
-          <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <a
+            href="https://flowbite.com/"
+            className="flex items-center space-x-3 rtl:space-x-reverse"
+          >
             <img src={logo} className="h-16" alt="Flowbite Logo" />
             {/* Hide the title on mobile view */}
             <span className="self-center hidden text-2xl font-semibold md:inline whitespace-nowrap dark:text-white">
@@ -36,9 +39,10 @@ const Navbar = () => {
             {/* Time and date display */}
             <div
               className="flex content-center justify-center p-4 m-auto text-lg text-white text-gray-900 rounded-md w-60 md:m-auto md:bg-orange-600"
-              style={{ backgroundColor: '#060c48' }}
+              style={{ backgroundColor: "#060c48" }}
             >
-              {currentTime.toLocaleTimeString()} - {currentTime.toLocaleDateString()}
+              {currentTime.toLocaleTimeString()} -{" "}
+              {currentTime.toLocaleDateString()}
             </div>
             {/* Mobile menu button */}
             <button
@@ -69,7 +73,7 @@ const Navbar = () => {
           {/* Navbar links */}
           <div
             className={`items-center justify-between ${
-              isOpen ? 'block' : 'hidden'
+              isOpen ? "block" : "hidden"
             } w-full md:flex md:w-auto md:order-1`}
             id="navbar-sticky"
           >
@@ -99,7 +103,6 @@ const Navbar = () => {
                   Contact Us
                 </a>
               </li>
-              
             </ul>
           </div>
         </div>
