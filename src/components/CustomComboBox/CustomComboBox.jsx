@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-const ComboBox = () => {
-  // Original unsorted list of countries
+const ComboBox = ({ onSelect }) => {
   const countries = [
     { id: 1, name: "Argentina" },
     { id: 2, name: "Brazil" },
     { id: 3, name: "China" },
     { id: 4, name: "USA" },
     { id: 5, name: "Italy" },
-    { id: 6, name: "France" }
+    { id: 6, name: "France" },
   ];
 
-  // Sort countries in alphabetical order
   const sortedCountries = countries.sort((a, b) =>
     a.name.localeCompare(b.name)
   );
 
-  // Set the initial state with "Select" as placeholder
   const [query, setQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -29,6 +26,7 @@ const ComboBox = () => {
     setSelectedItem(country);
     setQuery(country.name);
     setIsDropdownOpen(false);
+    onSelect(country); // Pass the selected item to the parent component
   };
 
   const clearSelection = () => {
@@ -43,11 +41,11 @@ const ComboBox = () => {
   };
 
   return (
-    <div className="relative h-10 ml-10 bg-black rounded-sm w-96">
+    <div className="relative h-10 ml-10 rounded-sm w-60">
       <div className="relative">
         <input
-          placeholder="--Select --"
-          className="block w-full py-3 text-sm rounded-lg ps-4 pe-9"
+          placeholder="--Select--"
+          className="block w-full py-3 text-sm border-2 rounded-sm ps-4 pe-9"
           type="text"
           role="combobox"
           aria-expanded={isDropdownOpen}
@@ -107,7 +105,7 @@ const ComboBox = () => {
       </div>
 
       {isDropdownOpen && filteredCountries.length > 0 && (
-        <div className="z-50 w-full p-1 mt-1 overflow-hidden overflow-y-auto bg-white border border-gray-200 rounded-lg max-h-96">
+        <div className="z-50 w-full p-1 mt-1 overflow-hidden overflow-y-auto bg-white border border-gray-200 rounded-lg ">
           {filteredCountries.map((country, index) => (
             <div
               key={country.id}

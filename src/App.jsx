@@ -1,19 +1,19 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import Navbar from './components/Navbar/Navbar'
-import SelectTrain from './components/SelectTrain/SelectTrain'
-import CustomComboBox from './components/CustomComboBox/CustomComboBox'
-import './App.css'
+import Navbar from "./components/Navbar/Navbar";
+import SelectTrain from "./components/SelectTrain/SelectTrain";
+import Separator from "./components/Separator/Separator";
+import CustomComboBox from "./components/CustomComboBox/CustomComboBox";
+import "./App.css";
 
 function App() {
-
   return (
     <>
-    <Navbar />
-    
-      
+      <Navbar />
+      <SelectTrain />
+      <Separator />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
