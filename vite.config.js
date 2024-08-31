@@ -1,8 +1,7 @@
 import { defineConfig } from "vite";
 
-export default defineConfig({
+export default {
   server: {
-    port: 80, // The port inside the container
-    host: "0.0.0.0", // Allows external access
+    port: 5174, // or any other port not reserved
   },
-});
+};

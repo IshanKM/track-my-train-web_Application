@@ -11,12 +11,6 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Build the Vite app
-RUN npm run build
-
-# Install an HTTP server to serve the build
-RUN npm install -g serve
-
 # Expose the port the app runs on
 EXPOSE 5174
 
