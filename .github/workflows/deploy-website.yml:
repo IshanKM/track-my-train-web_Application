@@ -1,0 +1,46 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and push Docker website image
+        run: |
+          docker build -t ishanmadushanka/track-my-train-website:latest .
+          docker push ishanmadushanka/track-my-train-website:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull image from Docker Hub
+        run: docker pull ishanmadushanka/track-my-train-website:latest
+
+      - name: Stop and remove existing container (if any)
+        run: |
+          docker stop track-my-train-website-container || true
+          docker rm track-my-train-website-container || true
+
+      - name: Run Docker container
+        run: |
+          docker run -d -p 5174:80 \
+            --name track-my-train-website-container ishanmadushanka/track-my-train-website

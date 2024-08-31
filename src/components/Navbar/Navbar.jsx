@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import logo from "../../assets/logo4.png"; // Import logo image
+import logo from "../../assets/logo4.png"; //
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false); // State to toggle mobile menu visibility
