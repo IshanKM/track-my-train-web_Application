@@ -42,5 +42,5 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d -p 5174:5174 \
+          docker run -d -p 5173:5173 \
             --name track-my-train-website-container ishanmadushanka/track-my-train-website
