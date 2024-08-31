@@ -1,5 +1,5 @@
-# Use the official Node.js 20 image as a base
-FROM node:20
+# Use the official Node.js 20 image as a base for building the application
+FROM node:20 AS build
 
 # Set working directory
 WORKDIR /app
@@ -11,8 +11,17 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Expose the port the app runs on
+# Build the application
+RUN npm run build
+
+# Use a smaller image to serve the built application
+FROM nginx:alpine
+
+# Copy the built files from the build stage
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 5174
 EXPOSE 5174
 
-# Start the application
-CMD ["npm", "run", "dev", "--", "--host"]
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
