@@ -1,38 +1,26 @@
 import React, { useState } from "react";
 
-const ComboBox = ({ onSelect }) => {
-  const countries = [
-    { id: 1, name: "Argentina" },
-    { id: 2, name: "Brazil" },
-    { id: 3, name: "China" },
-    { id: 4, name: "USA" },
-    { id: 5, name: "Italy" },
-    { id: 6, name: "France" },
-  ];
-
-  const sortedCountries = countries.sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
-
+const ComboBox = ({ options, onChange }) => {
   const [query, setQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const filteredCountries = sortedCountries.filter((country) =>
-    country.name.toLowerCase().includes(query.toLowerCase())
+  const filteredOptions = options.filter((option) =>
+    option.toLowerCase().includes(query.toLowerCase())
   );
 
-  const handleSelect = (country) => {
-    setSelectedItem(country);
-    setQuery(country.name);
+  const handleSelect = (option) => {
+    setSelectedItem(option);
+    setQuery(option);
     setIsDropdownOpen(false);
-    onSelect(country); // Pass the selected item to the parent component
+    if (onChange) onChange(option); // Trigger onChange prop
   };
 
   const clearSelection = () => {
     setSelectedItem(null);
     setQuery("");
     setIsDropdownOpen(true);
+    if (onChange) onChange(null); // Clear the selection
   };
 
   const handleInputChange = (e) => {
@@ -41,7 +29,7 @@ const ComboBox = ({ onSelect }) => {
   };
 
   return (
-    <div className="relative h-10 ml-10 rounded-sm w-60">
+    <div className="relative h-10 rounded-sm w-60">
       <div className="relative">
         <input
           placeholder="--Select--"
@@ -104,18 +92,18 @@ const ComboBox = ({ onSelect }) => {
         </div>
       </div>
 
-      {isDropdownOpen && filteredCountries.length > 0 && (
-        <div className="z-50 w-full p-1 mt-1 overflow-hidden overflow-y-auto bg-white border border-gray-200 rounded-lg ">
-          {filteredCountries.map((country, index) => (
+      {isDropdownOpen && filteredOptions.length > 0 && (
+        <div className="z-50 w-full p-1 mt-1 overflow-hidden overflow-y-auto bg-white border border-gray-200 rounded-lg max-h-60">
+          {filteredOptions.map((option, index) => (
             <div
-              key={country.id}
+              key={index}
               className="w-full px-4 py-2 text-sm text-gray-800 rounded-lg cursor-pointer hover:bg-gray-100"
               tabIndex={index}
-              onClick={() => handleSelect(country)}
+              onClick={() => handleSelect(option)}
             >
               <div className="flex items-center justify-between w-full">
-                <span>{country.name}</span>
-                {selectedItem?.id === country.id && (
+                <span>{option}</span>
+                {selectedItem === option && (
                   <svg
                     className="shrink-0 size-3.5 text-blue-600"
                     xmlns="http://www.w3.org/2000/svg"
