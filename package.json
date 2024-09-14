@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "dev": "vite",
-    "build": "vite builnp, d",
+    "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
