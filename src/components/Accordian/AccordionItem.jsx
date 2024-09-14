@@ -1,3 +1,4 @@
+// components/Accordion/AccordionItem.jsx
 import React, { useState } from "react";
 
 function AccordionItem({ title, content }) {
@@ -10,8 +11,6 @@ function AccordionItem({ title, content }) {
   return (
     <div className="flex justify-center w-full">
       <div className="w-full max-w-xl">
-        {" "}
-        {/* Adjust max-w-xl to control the maximum width */}
         <div className="accordion-item">
           <h2>
             <button
@@ -40,7 +39,7 @@ function AccordionItem({ title, content }) {
           </h2>
           {isOpen && (
             <div className="p-5 border border-gray-200 dark:border-gray-700">
-              <p>{content}</p>
+              {content} {/* Render the JSX content */}
             </div>
           )}
         </div>

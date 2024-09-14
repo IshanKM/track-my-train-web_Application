@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CustomComboBox from "../CustomComboBox/CustomComboBox";
 import backgroud from "../../assets/Background.jpg";
+import Accordion from "../Accordian/Accodian"; // Import the Accordion component
 
 const SelectTrain = () => {
   const [stations, setStations] = useState([]);
@@ -9,6 +10,7 @@ const SelectTrain = () => {
   const [startStation, setStartStation] = useState("");
   const [endStation, setEndStation] = useState("");
   const [filteredData, setFilteredData] = useState(null); // State to store filtered data
+  const [accordionData, setAccordionData] = useState([]); // State to store accordion data
 
   const fetchToken = async () => {
     try {
@@ -77,6 +79,7 @@ const SelectTrain = () => {
         routes,
       } = response.data;
 
+      // Process and sort data
       const processedData = routes.map((route) => ({
         startStation: responseStartStation,
         endStation: responseEndStation,
@@ -84,31 +87,134 @@ const SelectTrain = () => {
         endLocation: route.endLocation,
         distance: route.distance,
         price: route.price,
-        schedules: route.schedules.map((schedule) => {
-          // Add null checks for lastLocationData
-          const lastLocationData = schedule.lastLocationData || {};
-          return {
-            distance: schedule.schedule?.distance || "N/A",
-            defaultTrainName: schedule.schedule?.defaultTrainName || "N/A",
-            TrainNo: schedule.schedule?.TrainNo || "N/A",
-            status: schedule.schedule?.status || "N/A",
-            trainType: schedule.schedule?.trainType || "N/A",
-            frequency: schedule.schedule?.frequency || "N/A",
-            notes: schedule.schedule?.notes || "N/A",
-            avgStartTime: schedule.schedule?.avgStartTime || "N/A",
-            avgEndTime: schedule.schedule?.avgEndTime || "N/A",
-            lastLocationData: {
-              Name: lastLocationData?.Name || "N/A",
-              Time: lastLocationData?.Time || "N/A",
-              speed: lastLocationData?.speed || "N/A",
-              coordinate: lastLocationData?.coordinate || [],
-            },
-            progressPercentage: schedule.progressPercentage || "N/A",
-          };
-        }),
+        schedules: route.schedules
+          .map((schedule) => {
+            const lastLocationData = schedule.lastLocationData || {};
+            return {
+              distance: schedule.schedule?.distance || "N/A",
+              defaultTrainName: schedule.schedule?.defaultTrainName || "N/A",
+              TrainNo: schedule.schedule?.TrainNo || "N/A",
+              status: schedule.schedule?.status || "N/A",
+              trainType: schedule.schedule?.trainType || "N/A",
+              frequency: schedule.schedule?.frequency || "N/A",
+              notes: schedule.schedule?.notes || "N/A",
+              avgStartTime: schedule.schedule?.avgStartTime || "N/A",
+              avgEndTime: schedule.schedule?.avgEndTime || "N/A",
+              lastLocationData: {
+                Name: lastLocationData?.Name || "N/A",
+                Time: lastLocationData?.Time || "N/A",
+                speed: lastLocationData?.speed || "N/A",
+                coordinate: lastLocationData?.coordinate || [],
+              },
+              progressPercentage: schedule.progressPercentage || "N/A",
+            };
+          })
+          .sort((a, b) => {
+            // Sort by status: "active" should come first
+            if (a.status === "active" && b.status !== "active") return -1;
+            if (a.status !== "active" && b.status === "active") return 1;
+            return 0; // Leave the order unchanged if both have the same status
+          }),
       }));
 
       setFilteredData(processedData); // Update state with filtered data
+
+      // Prepare data for Accordion
+      const accordionItems = [];
+
+      processedData.forEach((route, routeIndex) => {
+        if (route.schedules.length > 0) {
+          route.schedules.forEach((schedule, scheduleIndex) => {
+            const title =
+              schedule.defaultTrainName || `Train ${scheduleIndex + 1}`;
+            const content = (
+              <div>
+                <p>
+                  <strong>Route {routeIndex + 1}</strong>
+                </p>
+                <p>
+                  <strong>Start Location:</strong> {route.startLocation}
+                </p>
+                <p>
+                  <strong>End Location:</strong> {route.endLocation}
+                </p>
+                <p>
+                  <strong>Distance:</strong> {route.distance} km
+                </p>
+                <p>
+                  <strong>Price:</strong> {JSON.stringify(route.price)}
+                </p>
+                {/* Schedule details */}
+                <p>
+                  <strong>Distance:</strong> {schedule.distance} km
+                </p>
+                <p>
+                  <strong>Train Name:</strong> {schedule.defaultTrainName}
+                </p>
+                <p>
+                  <strong>Train No:</strong> {schedule.TrainNo}
+                </p>
+                <p>
+                  <strong>Status:</strong> {schedule.status}
+                </p>
+                <p>
+                  <strong>Train Type:</strong> {schedule.trainType}
+                </p>
+                <p>
+                  <strong>Frequency:</strong> {schedule.frequency}
+                </p>
+                <p>
+                  <strong>Notes:</strong> {schedule.notes}
+                </p>
+                <p>
+                  <strong>Avg Start Time:</strong> {schedule.avgStartTime}
+                </p>
+                <p>
+                  <strong>Avg End Time:</strong> {schedule.avgEndTime}
+                </p>
+                <p>
+                  <strong>Progress Percentage:</strong>{" "}
+                  {schedule.progressPercentage}%
+                </p>
+                <p>
+                  <strong>Time:</strong> {schedule.lastLocationData.Time}
+                </p>
+                <p>
+                  <strong>Speed:</strong> {schedule.lastLocationData.speed} km/h
+                </p>
+                <p>
+                  <strong>Coordinate:</strong>{" "}
+                  {schedule.lastLocationData.coordinate.join(", ")}
+                </p>
+              </div>
+            );
+            accordionItems.push({ title, content });
+          });
+        } else {
+          // Handle routes with no schedules
+          const title = `Route ${routeIndex + 1}: No schedules available`;
+          const content = (
+            <div>
+              <p>
+                <strong>Start Location:</strong> {route.startLocation}
+              </p>
+              <p>
+                <strong>End Location:</strong> {route.endLocation}
+              </p>
+              <p>
+                <strong>Distance:</strong> {route.distance} km
+              </p>
+              <p>
+                <strong>Price:</strong> {JSON.stringify(route.price)}
+              </p>
+              <p>No schedules available.</p>
+            </div>
+          );
+          accordionItems.push({ title, content });
+        }
+      });
+
+      setAccordionData(accordionItems); // Update state with accordion data
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -162,81 +268,8 @@ const SelectTrain = () => {
           </div>
         </div>
 
-        {/* Display the filtered data */}
-        {filteredData && (
-          <div className="mt-4">
-            <h3>Filtered Data:</h3>
-            {filteredData.map((route, index) => (
-              <div key={index}>
-                <h4>Route {index + 1}</h4>
-                <p>
-                  <strong>Start Location:</strong> {route.startLocation}
-                </p>
-                <p>
-                  <strong>End Location:</strong> {route.endLocation}
-                </p>
-                <p>
-                  <strong>Distance:</strong> {route.distance} km
-                </p>
-                <p>
-                  <strong>Price:</strong> {JSON.stringify(route.price)}
-                </p>
-                {route.schedules.length > 0 ? (
-                  route.schedules.map((schedule, idx) => (
-                    <div key={idx}>
-                      <h5>Schedule {idx + 1}</h5>
-                      <p>
-                        <strong>Distance:</strong> {schedule.distance} km
-                      </p>
-                      <p>
-                        <strong>Train Name:</strong> {schedule.defaultTrainName}
-                      </p>
-                      <p>
-                        <strong>Train No:</strong> {schedule.TrainNo}
-                      </p>
-                      <p>
-                        <strong>Status:</strong> {schedule.status}
-                      </p>
-                      <p>
-                        <strong>Train Type:</strong> {schedule.trainType}
-                      </p>
-                      <p>
-                        <strong>Frequency:</strong> {schedule.frequency}
-                      </p>
-                      <p>
-                        <strong>Notes:</strong> {schedule.notes}
-                      </p>
-                      <p>
-                        <strong>Avg Start Time:</strong> {schedule.avgStartTime}
-                      </p>
-                      <p>
-                        <strong>Avg End Time:</strong> {schedule.avgEndTime}
-                      </p>
-                      <p>
-                        <strong>Progress Percentage:</strong>{" "}
-                        {schedule.progressPercentage}%
-                      </p>
-
-                      <p>
-                        <strong>Time:</strong> {schedule.lastLocationData.Time}
-                      </p>
-                      <p>
-                        <strong>Speed:</strong>{" "}
-                        {schedule.lastLocationData.speed} km/h
-                      </p>
-                      <p>
-                        <strong>Coordinate:</strong>{" "}
-                        {schedule.lastLocationData.coordinate.join(", ")}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p>No schedules available.</p>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Display the accordion with filtered data */}
+        {accordionData.length > 0 && <Accordion data={accordionData} />}
       </div>
     </div>
   );

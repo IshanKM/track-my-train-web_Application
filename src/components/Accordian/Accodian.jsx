@@ -1,8 +1,7 @@
-// Inside components/Accordian/Accodian.jsx
+// components/Accordion/Accordion.jsx
 import React from "react";
 import AccordionItem from "./AccordionItem";
 
-// Correctly export the Accordion component:
 function Accordion({ data }) {
   return (
     <div id="accordion-collapse" className="mt-16">
