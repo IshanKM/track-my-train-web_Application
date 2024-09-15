@@ -104,7 +104,7 @@ const SelectTrain = () => {
                 Name: lastLocationData?.Name || "N/A",
                 Time: lastLocationData?.Time || "N/A",
                 speed: lastLocationData?.speed || "N/A",
-                coordinate: lastLocationData?.coordinate || [],
+                coordinate: lastLocationData?.cordinate || [],
               },
               progressPercentage: schedule.progressPercentage || "N/A",
             };
@@ -127,11 +127,9 @@ const SelectTrain = () => {
           route.schedules.forEach((schedule, scheduleIndex) => {
             const title =
               schedule.defaultTrainName || `Train ${scheduleIndex + 1}`;
+
             const content = (
               <div>
-                <p>
-                  <strong>Route {routeIndex + 1}</strong>
-                </p>
                 <p>
                   <strong>Start Location:</strong> {route.startLocation}
                 </p>
@@ -188,6 +186,7 @@ const SelectTrain = () => {
                 </p>
               </div>
             );
+
             accordionItems.push({ title, content });
           });
         } else {
@@ -239,7 +238,7 @@ const SelectTrain = () => {
       <div className="absolute flex flex-col justify-center p-10 transform -translate-x-1/2 bg-white border border-2 border-black rounded-lg select-station left-1/2 top-1/2">
         <div className="mb-10 text-xl">
           <p className="items-start justify-start">
-            Hey , Please Select your Start and End Stations
+            Hey, Please Select your Start and End Stations
           </p>
         </div>
 
