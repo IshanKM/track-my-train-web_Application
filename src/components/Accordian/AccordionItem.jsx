@@ -1,11 +1,28 @@
 // components/Accordion/AccordionItem.jsx
 import React, { useState } from "react";
+import "leaflet/dist/leaflet.css";
 
 function AccordionItem({ title, content }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
+  };
+
+  // Function to render content as a table
+  const renderTable = (data) => {
+    const rows = Object.entries(data).map(([key, value]) => (
+      <tr key={key}>
+        <td className="px-4 py-2 font-medium text-gray-600">{key}</td>
+        <td className="px-4 py-2 text-gray-900">{value}</td>
+      </tr>
+    ));
+
+    return (
+      <table className="min-w-full divide-y divide-gray-200">
+        <tbody className="bg-white divide-y divide-gray-200">{rows}</tbody>
+      </table>
+    );
   };
 
   return (
@@ -39,7 +56,7 @@ function AccordionItem({ title, content }) {
           </h2>
           {isOpen && (
             <div className="p-5 border border-gray-200 dark:border-gray-700">
-              {content} {/* Render the JSX content */}
+              {renderTable(content)}
             </div>
           )}
         </div>

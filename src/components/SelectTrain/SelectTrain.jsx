@@ -34,7 +34,7 @@ const SelectTrain = () => {
       if (!token) return;
 
       const response = await axios.get(
-        "http://localhost:3000/api/v1/stations",
+        "http://api.trackmytrain.online/api/v1/stations",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ const SelectTrain = () => {
     console.log("End Station:", endStation);
 
     try {
-      const url = `http://localhost:3000/api/v1/clients?startStation=${startStation}&endStation=${endStation}`;
+      const url = `http://api.trackmytrain.online/api/v1/clients?startStation=${startStation}&endStation=${endStation}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -106,7 +106,9 @@ const SelectTrain = () => {
                 speed: lastLocationData?.speed || "N/A",
                 coordinate: lastLocationData?.cordinate || [],
               },
-              progressPercentage: schedule.progressPercentage || "N/A",
+              progressPercentage: isNaN(schedule.progressPercentage)
+                ? "N/A"
+                : `${schedule.progressPercentage}`,
             };
           })
           .sort((a, b) => {
@@ -128,87 +130,38 @@ const SelectTrain = () => {
             const title =
               schedule.defaultTrainName || `Train ${scheduleIndex + 1}`;
 
-            const content = (
-              <div>
-                <p>
-                  <strong>Start Location:</strong> {route.startLocation}
-                </p>
-                <p>
-                  <strong>End Location:</strong> {route.endLocation}
-                </p>
-                <p>
-                  <strong>Distance:</strong> {route.distance} km
-                </p>
-                <p>
-                  <strong>Price:</strong> {JSON.stringify(route.price)}
-                </p>
-                {/* Schedule details */}
-                <p>
-                  <strong>Distance:</strong> {schedule.distance} km
-                </p>
-                <p>
-                  <strong>Train Name:</strong> {schedule.defaultTrainName}
-                </p>
-                <p>
-                  <strong>Train No:</strong> {schedule.TrainNo}
-                </p>
-                <p>
-                  <strong>Status:</strong> {schedule.status}
-                </p>
-                <p>
-                  <strong>Train Type:</strong> {schedule.trainType}
-                </p>
-                <p>
-                  <strong>Frequency:</strong> {schedule.frequency}
-                </p>
-                <p>
-                  <strong>Notes:</strong> {schedule.notes}
-                </p>
-                <p>
-                  <strong>Avg Start Time:</strong> {schedule.avgStartTime}
-                </p>
-                <p>
-                  <strong>Avg End Time:</strong> {schedule.avgEndTime}
-                </p>
-                <p>
-                  <strong>Progress Percentage:</strong>{" "}
-                  {schedule.progressPercentage}%
-                </p>
-                <p>
-                  <strong>Time:</strong> {schedule.lastLocationData.Time}
-                </p>
-                <p>
-                  <strong>Speed:</strong> {schedule.lastLocationData.speed} km/h
-                </p>
-                <p>
-                  <strong>Coordinate:</strong>{" "}
-                  {schedule.lastLocationData.coordinate.join(", ")}
-                </p>
-              </div>
-            );
+            const content = {
+              "Start Location": route.startLocation,
+              "End Location": route.endLocation,
+              Distance: `${route.distance} km`,
+              Price: JSON.stringify(route.price),
+              "Schedule Distance": `${schedule.distance} km`,
+              "Train Name": schedule.defaultTrainName,
+              "Train No": schedule.TrainNo,
+              Status: schedule.status,
+              "Train Type": schedule.trainType,
+              Frequency: schedule.frequency,
+              Notes: schedule.notes,
+              "Avg Start Time": schedule.avgStartTime,
+              "Avg End Time": schedule.avgEndTime,
+              "Progress Percentage": `${schedule.progressPercentage}%`,
+              Time: schedule.lastLocationData.Time,
+              Speed: `${schedule.lastLocationData.speed} km/h`,
+              Coordinate: schedule.lastLocationData.coordinate.join(", "),
+            };
 
             accordionItems.push({ title, content });
           });
         } else {
           // Handle routes with no schedules
           const title = `Route ${routeIndex + 1}: No schedules available`;
-          const content = (
-            <div>
-              <p>
-                <strong>Start Location:</strong> {route.startLocation}
-              </p>
-              <p>
-                <strong>End Location:</strong> {route.endLocation}
-              </p>
-              <p>
-                <strong>Distance:</strong> {route.distance} km
-              </p>
-              <p>
-                <strong>Price:</strong> {JSON.stringify(route.price)}
-              </p>
-              <p>No schedules available.</p>
-            </div>
-          );
+          const content = {
+            "Start Location": route.startLocation,
+            "End Location": route.endLocation,
+            Distance: `${route.distance} km`,
+            Price: JSON.stringify(route.price),
+            Notes: "No schedules available.",
+          };
           accordionItems.push({ title, content });
         }
       });
@@ -217,6 +170,13 @@ const SelectTrain = () => {
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
+  };
+
+  const handleClear = () => {
+    setStartStation("");
+    setEndStation("");
+    setFilteredData(null);
+    setAccordionData([]);
   };
 
   useEffect(() => {
@@ -261,10 +221,21 @@ const SelectTrain = () => {
               onChange={(value) => setEndStation(value)}
             />
           </div>
+        </div>
 
-          <div className="p-5 bg-[#079ca2] rounded-md text-white bottom-0 ">
-            <button onClick={handleSubmit}>Search</button>
-          </div>
+        <div className="flex justify-center gap-4 mt-4">
+          <button
+            onClick={handleSubmit}
+            className="p-5 bg-[#079ca2] rounded-md text-white"
+          >
+            Search
+          </button>
+          <button
+            onClick={handleClear}
+            className="p-5 text-white bg-gray-500 rounded-md"
+          >
+            Clear
+          </button>
         </div>
 
         {/* Display the accordion with filtered data */}
