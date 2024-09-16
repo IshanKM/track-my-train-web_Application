@@ -15,7 +15,7 @@ const SelectTrain = () => {
   const fetchToken = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/get-token",
+        "https://api.trackmytrain.online/api/v1/get-token",
         {},
         {
           headers: {
@@ -34,7 +34,7 @@ const SelectTrain = () => {
       if (!token) return;
 
       const response = await axios.get(
-        "http://api.trackmytrain.online/api/v1/stations",
+        "https://api.trackmytrain.online/api/v1/stations",
         {
           headers: {
             Authorization: `Bearer ${token}`,
