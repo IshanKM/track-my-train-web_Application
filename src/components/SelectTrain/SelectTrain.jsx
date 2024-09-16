@@ -63,7 +63,7 @@ const SelectTrain = () => {
     console.log("End Station:", endStation);
 
     try {
-      const url = `http://api.trackmytrain.online/api/v1/clients?startStation=${startStation}&endStation=${endStation}`;
+      const url = `https://api.trackmytrain.online/api/v1/clients?startStation=${startStation}&endStation=${endStation}`;
 
       const response = await axios.get(url, {
         headers: {
